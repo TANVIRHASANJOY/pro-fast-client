@@ -11,6 +11,7 @@ import SendParcel from "../pages/sendParcel/SendParcel";
 import DashBoardLayout from "../layout/dashBoardLayout"; // Removed duplicate lowercase import
 import MyParcels from "../pages/dashBoard/myParcels/MyParcels";
 import PrivateRoutes from "../routes/privateRoutes";
+import Payments from "../pages/dashBoard/Payment/Payments";
 
 export const router = createBrowserRouter([
   {
@@ -59,6 +60,10 @@ export const router = createBrowserRouter([
         path: 'myParcels',
         Component: MyParcels, // Passing the reference
       },
-    ]
+      {
+        path:'payment/:id',
+        Component:Payments,
+      }
+      ]
   }
 ]);

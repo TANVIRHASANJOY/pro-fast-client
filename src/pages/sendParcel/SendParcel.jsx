@@ -2,12 +2,12 @@ import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import Swal from "sweetalert2";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
-import useAuth from "../../hooks/useAuth"; // Added for email
-import { useMutation, useQueryClient } from "@tanstack/react-query"; // Added for auto-refresh
+import useAuth from "../../hooks/useAuth"; 
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 const SendParcel = () => {
   const axiosSecure = useAxiosSecure();
-  const { user } = useAuth(); // Get current logged-in user
+  const { user } = useAuth(); 
   const queryClient = useQueryClient();
 
   const {
@@ -76,12 +76,11 @@ const SendParcel = () => {
       return res.data;
     },
     onSuccess: () => {
-      // This tells the dashboard to refresh data immediately
       queryClient.invalidateQueries(["parcels", user?.email]);
       
       Swal.fire({
         title: "Success! 🎉",
-        text: "Your parcel has been booked and saved.",
+        text: "Parcel booked. Please go to your dashboard to complete payment.",
         icon: "success",
         confirmButtonColor: "#16a34a",
       });
@@ -111,24 +110,25 @@ const SendParcel = () => {
           <p><b>Outside City Charge:</b> ৳${costDetails.outsideCharge}</p>
           <hr/>
           <h3>Total Cost: ৳${costDetails.total}</h3>
+          <p style="color: gray; font-size: 0.9rem;">You can pay this later from your dashboard.</p>
         </div>
       `,
       icon: "info",
       showCancelButton: true,
-      confirmButtonText: "Confirm & Pay",
+      confirmButtonText: "Confirm Booking",
       cancelButtonText: "Edit",
       confirmButtonColor: "#16a34a",
       cancelButtonColor: "#ef4444",
     }).then((result) => {
       if (result.isConfirmed) {
-        // 2. Prepare Data (CRITICAL: Added senderEmail)
+        // 2. Prepare Data (payment_status set to 'unpaid')
         const parcelData = {
           ...data,
-          senderEmail: user?.email, // Connects parcel to your email
+          email: user?.email, // Ensure this matches your backend query key
           weight: data.weight ? Number(data.weight) : 0,
           cost: costDetails.total,
           status: "pending",
-          payment_status: "paid",
+          payment_status: "unpaid", // FIXED: Now shows the Pay button in dashboard
           creation_date: new Date().toISOString(),
         };
 
@@ -192,9 +192,10 @@ const SendParcel = () => {
           <div className="grid md:grid-cols-2 gap-4">
             <input
               type="text"
-              defaultValue={user?.displayName || "Joy"}
+              defaultValue={user?.displayName}
               {...register("senderName", { required: true })}
-              className="border p-2 rounded-lg"
+              className="border p-2 rounded-lg bg-gray-50"
+              readOnly
             />
             <input
               type="text"
@@ -289,7 +290,7 @@ const SendParcel = () => {
           disabled={mutation.isPending}
           className={`w-full bg-green-600 hover:bg-green-700 text-white py-3 rounded-xl font-semibold transition ${mutation.isPending ? 'opacity-50 cursor-not-allowed' : ''}`}
         >
-          {mutation.isPending ? "Submitting..." : "Submit Parcel"}
+          {mutation.isPending ? "Submitting..." : "Confirm Booking"}
         </button>
       </form>
     </div>
