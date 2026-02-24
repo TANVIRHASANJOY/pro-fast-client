@@ -1,21 +1,29 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import useAuth from "../../../hooks/useAuth";
 
 const SocialLogIn = () => {
-    const {signInWithGoogle}=useAuth()
-    const handleGoogleSignIn=()=>{
-signInWithGoogle()
-.then(result=>{
-    console.log(result)
-})
-.catch(error=>{
-    console.error(error)
-})
-    }
+  const { signInWithGoogle } = useAuth();
+  const navigate = useNavigate();
+
+  const handleGoogleSignIn = () => {
+    signInWithGoogle()
+      .then((result) => {
+        console.log(result);
+        navigate("/"); // ✅ Redirect to Home
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+
   return (
     <div className="mt-4">
       <p className="text-center text-gray-500 mb-2">or</p>
-      <button onClick={handleGoogleSignIn} className="w-full flex items-center justify-center gap-2 py-2 border border-gray-300 rounded-lg bg-white text-black hover:bg-gray-100 transition">
+      <button
+        onClick={handleGoogleSignIn}
+        className="w-full flex items-center justify-center gap-2 py-2 border border-gray-300 rounded-lg bg-white text-black hover:bg-gray-100 transition"
+      >
         <svg
           aria-label="Google logo"
           width="20"
