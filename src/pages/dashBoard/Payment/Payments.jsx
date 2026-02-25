@@ -4,9 +4,10 @@ import { useQuery } from '@tanstack/react-query';
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements } from '@stripe/react-stripe-js';
 import useAxiosSecure from '../../../hooks/useAxiosSecure';
-import PaymentForm from '../PaymentForm'; // Ensure this path is correct
+import PaymentForm from '../PaymentForm'; 
 
-const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PK);
+// Use your actual Public Key here
+const stripePromise = loadStripe('pk_test_51T4BdNQ6bBQQtEgWHvX2Vrq1WYwsq2EuVgCzAFvOHQJdhXIMbZtOamUoECvNYTnQ2IMf2Igr0TD5TppqHt1Y2a1p005nvUxKrp');
 
 const Payments = () => {
     const { id } = useParams();
@@ -20,7 +21,7 @@ const Payments = () => {
         }
     });
 
-    if (isLoading) return <div className="p-10 text-center"><span className="loading loading-spinner text-indigo-600"></span></div>;
+    if (isLoading) return <div className="p-10 text-center flex justify-center items-center min-h-[400px]"><span className="loading loading-spinner loading-lg text-indigo-600"></span></div>;
 
     return (
         <div className="max-w-md mx-auto bg-white p-8 rounded-2xl shadow-2xl border mt-10">
@@ -32,9 +33,10 @@ const Payments = () => {
             </div>
             
             <div className="bg-indigo-50 p-4 rounded-xl mb-8 border border-indigo-100">
-                <p className="text-indigo-900 font-black text-2xl text-center">Total: ৳{parcel?.cost}</p>
+                <p className="text-indigo-900 font-black text-2xl text-center">Total Payable: ৳{parcel?.cost}</p>
             </div>
 
+            {/* Elements context provides access to Stripe tools */}
             <Elements stripe={stripePromise}>
                 <PaymentForm parcel={parcel} />
             </Elements>

@@ -8,15 +8,16 @@ import Register from "../pages/Authentication/Register/Register";
 
 import CoveragePage from "../pages/coverage/CoveragePage";
 import SendParcel from "../pages/sendParcel/SendParcel";
-import DashBoardLayout from "../layout/dashBoardLayout"; // Removed duplicate lowercase import
+import DashBoardLayout from "../layout/dashBoardLayout"; 
 import MyParcels from "../pages/dashBoard/myParcels/MyParcels";
 import PrivateRoutes from "../routes/privateRoutes";
 import Payments from "../pages/dashBoard/Payment/Payments";
+import PaymentHistory from '../pages/dashBoard/paymentHistory/PaymentHistory'; // Added this import
 
 export const router = createBrowserRouter([
   {
     path: "/",
-    Component: RootLayout, // Passing the reference
+    Component: RootLayout, 
     children: [
       {
         index: true,
@@ -28,7 +29,6 @@ export const router = createBrowserRouter([
       },
       {
         path: 'sendParcel',
-        // Note: Wrapped routes MUST use 'element' because they contain JSX logic
         element: <PrivateRoutes><SendParcel /></PrivateRoutes> 
       }
     ]
@@ -49,7 +49,6 @@ export const router = createBrowserRouter([
   },
   {
     path: '/dashboard',
-    // Wrapped routes MUST use 'element'
     element: (
       <PrivateRoutes>
         <DashBoardLayout />
@@ -58,12 +57,16 @@ export const router = createBrowserRouter([
     children: [
       {
         path: 'myParcels',
-        Component: MyParcels, // Passing the reference
+        Component: MyParcels, 
       },
       {
-        path:'payment/:id',
-        Component:Payments,
+        path: 'payment/:id',
+        Component: Payments,
+      },
+      {
+        path: 'paymentHistory', // Added payment history route
+        Component: PaymentHistory,
       }
-      ]
+    ]
   }
 ]);

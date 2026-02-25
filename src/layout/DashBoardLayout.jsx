@@ -3,12 +3,11 @@ import { NavLink, Outlet } from 'react-router-dom';
 
 const DashBoardLayout = () => {
     return (
-        // Added 'bg-base-200' to the whole container to prevent the "white-out" look
         <div className="drawer lg:drawer-open bg-base-200 min-h-screen">
             <input id="dashboard-drawer" type="checkbox" className="drawer-toggle" />
             
             {/* Main Content Area */}
-            <div className="drawer-content flex flex-col p-6 lg:p-10">
+            <div className="drawer-content flex flex-col p-4 lg:p-10">
                 {/* Mobile Header */}
                 <div className="flex items-center justify-between lg:hidden mb-6 bg-white p-4 rounded-xl shadow-sm">
                     <h2 className="text-xl font-bold text-green-600">Pro-Fast</h2>
@@ -17,8 +16,8 @@ const DashBoardLayout = () => {
                     </label>
                 </div>
 
-                {/* Content Wrapper: Added white background and sharp shadow for visibility */}
-                <div className="bg-white min-h-[80vh] rounded-2xl shadow-xl p-6 border border-gray-100">
+                {/* Content Wrapper */}
+                <div className="bg-white min-h-[85vh] rounded-2xl shadow-xl p-4 md:p-8 border border-gray-100">
                     <Outlet /> 
                 </div>
             </div> 
@@ -33,20 +32,10 @@ const DashBoardLayout = () => {
                         <h2 className="text-2xl font-black text-white tracking-tight">Pro-Fast</h2>
                     </div>
 
-                    <p className="px-4 text-xs font-semibold text-slate-500 uppercase tracking-widest mb-2">User Menu</p>
+                    <p className="px-4 text-xs font-semibold text-slate-500 uppercase tracking-widest mb-4">User Menu</p>
                     
-                    {/* Navigation Links with Active States */}
-                    <li className="mb-1">
-                        <NavLink 
-                            to="/dashboard/myParcels" 
-                            className={({ isActive }) => 
-                                `flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${isActive ? 'bg-green-600 text-white shadow-lg shadow-green-900/20' : 'hover:bg-slate-800'}`
-                            }
-                        >
-                            <span className="text-lg">📦</span> My Parcels
-                        </NavLink>
-                    </li>
-                    <li className="mb-1">
+                    {/* 1. Book Parcel */}
+                    <li className="mb-2">
                         <NavLink 
                             to="/sendParcel" 
                             className={({ isActive }) => 
@@ -57,10 +46,63 @@ const DashBoardLayout = () => {
                         </NavLink>
                     </li>
 
-                    <div className="divider before:bg-slate-800 after:bg-slate-800 my-6"></div>
+                    {/* 2. My Parcels */}
+                    <li className="mb-2">
+                        <NavLink 
+                            to="/dashboard/myParcels" 
+                            className={({ isActive }) => 
+                                `flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${isActive ? 'bg-green-600 text-white shadow-lg shadow-green-900/20' : 'hover:bg-slate-800'}`
+                            }
+                        >
+                            <span className="text-lg">📦</span> My Parcels
+                        </NavLink>
+                    </li>
 
+                    {/* 3. Track Parcel (Placeholder) */}
+                    <li className="mb-2">
+                        <NavLink 
+                            to="/dashboard/trackParcel" 
+                            className={({ isActive }) => 
+                                `flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${isActive ? 'bg-green-600 text-white shadow-lg shadow-green-900/20' : 'hover:bg-slate-800'}`
+                            }
+                        >
+                            <span className="text-lg">📍</span> Track Parcel
+                        </NavLink>
+                    </li>
+
+                    {/* 4. Payment History */}
+                    <li className="mb-2">
+                        <NavLink 
+                            to="/dashboard/paymentHistory" 
+                            className={({ isActive }) => 
+                                `flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${isActive ? 'bg-green-600 text-white shadow-lg shadow-green-900/20' : 'hover:bg-slate-800'}`
+                            }
+                        >
+                            <span className="text-lg">💳</span> Payment History
+                        </NavLink>
+                    </li>
+
+                    <div className="divider before:bg-slate-800 after:bg-slate-800 my-4"></div>
+                    
+                    <p className="px-4 text-xs font-semibold text-slate-500 uppercase tracking-widest mb-2">Account Settings</p>
+
+                    {/* 5. Update Profile (Placeholder) */}
+                    <li className="mb-2">
+                        <NavLink 
+                            to="/dashboard/updateProfile" 
+                            className={({ isActive }) => 
+                                `flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${isActive ? 'bg-green-600 text-white shadow-lg shadow-green-900/20' : 'hover:bg-slate-800'}`
+                            }
+                        >
+                            <span className="text-lg">👤</span> My Profile
+                        </NavLink>
+                    </li>
+
+                    <div className="divider before:bg-slate-800 after:bg-slate-800 my-4"></div>
+
+                    {/* Home Link */}
                     <li>
-                        <NavLink to="/" className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-800">
+                        <NavLink to="/" className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-800 transition-colors">
                             <span className="text-lg">🏠</span> Home
                         </NavLink>
                     </li>
