@@ -1,8 +1,9 @@
-import { createBrowserRouter } from "react-router";
+import { createBrowserRouter } from "react-router-dom";
+
 // Layouts
-import RootLayout from "../layout/RootLayout"; 
+import RootLayout from "../layout/RootLayout";
 import AuthLayout from "../layout/AuthLayout";
-import DashBoardLayout from "../layout/dashBoardLayout"; 
+import DashBoardLayout from "../layout/dashBoardLayout";
 
 // Pages
 import Home from "../pages/Home/Home";
@@ -12,56 +13,94 @@ import CoveragePage from "../pages/coverage/CoveragePage";
 import SendParcel from "../pages/sendParcel/SendParcel";
 import MyParcels from "../pages/dashBoard/myParcels/MyParcels";
 import Payments from "../pages/dashBoard/Payment/Payments";
-import PaymentHistory from '../pages/dashBoard/paymentHistory/PaymentHistory';
+import PaymentHistory from "../pages/dashBoard/paymentHistory/PaymentHistory";
 import BeARider from "../pages/dashBoard/BeARider/BeARider";
-
-
-
-// Routes
-import PrivateRoutes from "../routes/privateRoutes";
 import PendingRider from "../pages/dashBoard/PendingRider";
 import ActiveRider from "../pages/dashBoard/ActiveRider";
 import TrackParcel from "../pages/dashBoard/TrackParcel";
+import MakeAdmin from "../pages/dashBoard/MakeAdmin";
+import Forbidden from "../pages/Forbidden/Forbidden";
+
+// Routes
+import PrivateRoutes from "../routes/privateRoutes";
+import AdminRoute from "../routes/AdminRoute";
 
 export const router = createBrowserRouter([
   {
     path: "/",
-    Component: RootLayout, 
+    element: <RootLayout />,
     children: [
-      { index: true, Component: Home },
-      { path: 'coverage', Component: CoveragePage },
-      { 
-        path:'BeARider',
-        element: <PrivateRoutes><BeARider /></PrivateRoutes>
+      { index: true, element: <Home /> },
+      { path: "coverage", element: <CoveragePage /> },
+      { path: "forbidden", element: <Forbidden /> },
+
+      {
+        path: "BeARider",
+        element: (
+          <PrivateRoutes>
+            <BeARider />
+          </PrivateRoutes>
+        ),
       },
-      { 
-        path: 'sendParcel',
-        element: <PrivateRoutes><SendParcel /></PrivateRoutes> 
-      }
-    ]
+      {
+        path: "sendParcel",
+        element: (
+          <PrivateRoutes>
+            <SendParcel />
+          </PrivateRoutes>
+        ),
+      },
+    ],
   },
+
   {
-    path: '/',
-    Component: AuthLayout,
+    path: "/",
+    element: <AuthLayout />,
     children: [
-      { path: 'login', Component: Login },
-      { path: 'register', Component: Register }
-    ]
+      { path: "login", element: <Login /> },
+      { path: "register", element: <Register /> },
+    ],
   },
+
   {
-    path: '/dashboard',
+    path: "/dashboard",
     element: (
       <PrivateRoutes>
         <DashBoardLayout />
       </PrivateRoutes>
     ),
     children: [
-      { path: 'myParcels', Component: MyParcels },
-      { path: 'payment/:id', Component: Payments },
-      { path: 'paymentHistory', Component: PaymentHistory },
-      { path: 'pendingRiders', Component: PendingRider }, // ✅ Added Pending Riders
-      { path: 'activeRiders', Component: ActiveRider}   , // ✅ Added Active Riders
-      {path:'trackParcel',Component:TrackParcel},
-    ]
-  }
+      // ✅ Normal user pages
+      { path: "myParcels", element: <MyParcels /> },
+      { path: "payment/:id", element: <Payments /> },
+      { path: "paymentHistory", element: <PaymentHistory /> },
+      { path: "trackParcel", element: <TrackParcel /> },
+
+      // ✅ ADMIN ONLY PAGES
+      {
+        path: "pendingRiders",
+        element: (
+          <AdminRoute>
+            <PendingRider />
+          </AdminRoute>
+        ),
+      },
+      {
+        path: "activeRiders",
+        element: (
+          <AdminRoute>
+            <ActiveRider />
+          </AdminRoute>
+        ),
+      },
+      {
+        path: "makeAdmin",
+        element: (
+          <AdminRoute>
+            <MakeAdmin />
+          </AdminRoute>
+        ),
+      },
+    ],
+  },
 ]);

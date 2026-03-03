@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
+import Swal from 'sweetalert2';
 import useAxiosSecure from '../../hooks/useAxiosSecure';
 
 const ActiveRider = () => {
   const [selectedRider, setSelectedRider] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const [search, setSearch] = useState('');
 
   const axiosSecure = useAxiosSecure();
 
@@ -12,14 +14,53 @@ const ActiveRider = () => {
   const { data: riders = [], refetch, isLoading } = useQuery({
     queryKey: ['activeRiders'],
     queryFn: async () => {
-      const res = await axiosSecure.get('/riders?status=active');
+      const res = await axiosSecure.get('/riders?status=approved'); // "approved" is active in backend
       return res.data;
     },
   });
 
+  // Deactivate rider
+  const handleDeactivate = async (rider) => {
+    const { isConfirmed } = await Swal.fire({
+      title: 'Deactivate Rider',
+      text: `Are you sure you want to deactivate ${rider.name}?`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, deactivate!',
+      confirmButtonColor: '#dc2626',
+    });
+
+    if (isConfirmed) {
+      try {
+        await axiosSecure.patch(`/riders/${rider._id}`, { status: 'pending' });
+        Swal.fire('Deactivated!', `${rider.name} is now pending.`, 'success');
+        refetch();
+      } catch (err) {
+        Swal.fire('Error', 'Something went wrong', 'error');
+      }
+    }
+  };
+
+  // Filter riders based on search input
+  const filteredRiders = riders.filter((rider) =>
+    rider.name.toLowerCase().includes(search.toLowerCase()) ||
+    rider.phone?.toLowerCase().includes(search.toLowerCase())
+  );
+
   return (
     <div className="p-4">
-      <h2 className="text-2xl font-bold mb-6 text-gray-700">Active Riders</h2>
+      <h2 className="text-2xl font-bold mb-4 text-gray-700">Active Riders</h2>
+
+      {/* Search input */}
+      <div className="mb-4">
+        <input
+          type="text"
+          placeholder="Search by name or phone"
+          className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
+      </div>
 
       {isLoading ? (
         <p className="text-gray-500">Loading...</p>
@@ -36,20 +77,20 @@ const ActiveRider = () => {
               </tr>
             </thead>
             <tbody>
-              {riders.length === 0 ? (
+              {filteredRiders.length === 0 ? (
                 <tr>
                   <td colSpan={5} className="text-center py-4 text-gray-500">
-                    No active riders
+                    No active riders found
                   </td>
                 </tr>
               ) : (
-                riders.map((rider) => (
+                filteredRiders.map((rider) => (
                   <tr key={rider._id} className="hover:bg-gray-50 transition-colors">
                     <td className="border px-4 py-2">{rider.name}</td>
                     <td className="border px-4 py-2">{rider.email}</td>
                     <td className="border px-4 py-2">{rider.district}</td>
                     <td className="border px-4 py-2">{rider.vehicleType}</td>
-                    <td className="border px-4 py-2 flex justify-center">
+                    <td className="border px-4 py-2 flex justify-center gap-2">
                       <button
                         className="btn btn-sm bg-blue-600 text-white hover:bg-blue-700 transition"
                         onClick={() => {
@@ -58,6 +99,12 @@ const ActiveRider = () => {
                         }}
                       >
                         View
+                      </button>
+                      <button
+                        className="btn btn-sm bg-red-600 text-white hover:bg-red-700 transition"
+                        onClick={() => handleDeactivate(rider)}
+                      >
+                        Deactivate
                       </button>
                     </td>
                   </tr>
@@ -82,7 +129,6 @@ const ActiveRider = () => {
               <p><strong>Vehicle:</strong> {selectedRider.vehicleType}</p>
               <p><strong>NID:</strong> {selectedRider.nid}</p>
             </div>
-
             <button
               className="mt-6 btn w-full bg-gray-800 hover:bg-gray-900 text-white"
               onClick={() => setShowModal(false)}

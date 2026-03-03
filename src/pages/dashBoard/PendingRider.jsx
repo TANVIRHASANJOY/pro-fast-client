@@ -6,10 +6,9 @@ import useAxiosSecure from '../../hooks/useAxiosSecure';
 const PendingRider = () => {
   const [selectedRider, setSelectedRider] = useState(null);
   const [showModal, setShowModal] = useState(false);
-
   const axiosSecure = useAxiosSecure();
 
-  // Fetch pending riders using TanStack Query v5 object form
+  // Fetch pending riders
   const { data: riders = [], refetch, isLoading } = useQuery({
     queryKey: ['pendingRiders'],
     queryFn: async () => {
@@ -21,8 +20,8 @@ const PendingRider = () => {
   // Approve rider
   const handleApprove = async (rider) => {
     const { isConfirmed } = await Swal.fire({
-      title: 'Are you sure?',
-      text: `Approve ${rider.name} as active rider?`,
+      title: 'Approve Rider',
+      text: `Are you sure you want to approve ${rider.name}?`,
       icon: 'question',
       showCancelButton: true,
       confirmButtonText: 'Yes, approve!',
@@ -30,9 +29,9 @@ const PendingRider = () => {
 
     if (isConfirmed) {
       try {
-        await axiosSecure.patch(`/riders/${rider._id}`, { status: 'active' });
-        Swal.fire('Approved!', `${rider.name} is now active.`, 'success');
-        refetch(); // Refresh the list
+        await axiosSecure.patch(`/riders/${rider._id}`, { status: 'approved' });
+        Swal.fire('Approved!', `${rider.name} is now an active rider.`, 'success');
+        refetch();
       } catch (err) {
         Swal.fire('Error', 'Something went wrong', 'error');
       }
@@ -42,19 +41,19 @@ const PendingRider = () => {
   // Reject rider
   const handleReject = async (rider) => {
     const { isConfirmed } = await Swal.fire({
-      title: 'Are you sure?',
-      text: `Reject ${rider.name}? This action cannot be undone.`,
+      title: 'Reject Rider',
+      text: `Are you sure you want to reject ${rider.name}?`,
       icon: 'warning',
       showCancelButton: true,
       confirmButtonText: 'Yes, reject!',
-      confirmButtonColor: '#dc2626', // red
+      confirmButtonColor: '#dc2626',
     });
 
     if (isConfirmed) {
       try {
         await axiosSecure.patch(`/riders/${rider._id}`, { status: 'rejected' });
         Swal.fire('Rejected!', `${rider.name} has been rejected.`, 'success');
-        refetch(); // Refresh the list
+        refetch();
       } catch (err) {
         Swal.fire('Error', 'Something went wrong', 'error');
       }
@@ -124,7 +123,7 @@ const PendingRider = () => {
         </div>
       )}
 
-      {/* Modal for rider details */}
+      {/* Modal */}
       {showModal && selectedRider && (
         <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
           <div className="bg-white rounded-xl p-6 w-96 shadow-lg relative">
@@ -138,7 +137,6 @@ const PendingRider = () => {
               <p><strong>Vehicle:</strong> {selectedRider.vehicleType}</p>
               <p><strong>NID:</strong> {selectedRider.nid}</p>
             </div>
-
             <button
               className="mt-6 btn w-full bg-gray-800 hover:bg-gray-900 text-white"
               onClick={() => setShowModal(false)}
