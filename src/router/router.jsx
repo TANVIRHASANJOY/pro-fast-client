@@ -19,11 +19,16 @@ import PendingRider from "../pages/dashBoard/PendingRider";
 import ActiveRider from "../pages/dashBoard/ActiveRider";
 import TrackParcel from "../pages/dashBoard/TrackParcel";
 import MakeAdmin from "../pages/dashBoard/MakeAdmin";
+import AssignRider from "../pages/dashBoard/AssignRider/AssignRider";
+import PendingDeliveris from "../pages/dashBoard/PendingDeliveris";
 import Forbidden from "../pages/Forbidden/Forbidden";
 
 // Routes
 import PrivateRoutes from "../routes/privateRoutes";
 import AdminRoute from "../routes/AdminRoute";
+import RiderRoute from "../routes/RiderRoute";
+import CompleteDelivery from "../pages/dashBoard/CompleteDelivery";
+import AboutUs from "../pages/Home/About/AboutUs";
 
 export const router = createBrowserRouter([
   {
@@ -32,6 +37,10 @@ export const router = createBrowserRouter([
     children: [
       { index: true, element: <Home /> },
       { path: "coverage", element: <CoveragePage /> },
+      {
+path:'about',
+Component:AboutUs,
+      },
       { path: "forbidden", element: <Forbidden /> },
 
       {
@@ -70,13 +79,31 @@ export const router = createBrowserRouter([
       </PrivateRoutes>
     ),
     children: [
-      // ✅ Normal user pages
+      // USER
       { path: "myParcels", element: <MyParcels /> },
       { path: "payment/:id", element: <Payments /> },
       { path: "paymentHistory", element: <PaymentHistory /> },
       { path: "trackParcel", element: <TrackParcel /> },
 
-      // ✅ ADMIN ONLY PAGES
+      // RIDER ONLY
+      {
+        path: "pendingDeliveries",
+        element: (
+          <RiderRoute>
+            <PendingDeliveris />
+          </RiderRoute>
+        ),
+      },
+        {
+        path: "completeDelivery",
+        element: (
+          <RiderRoute>
+            <CompleteDelivery></CompleteDelivery>
+          </RiderRoute>
+        ),
+      },
+
+      // ADMIN ONLY
       {
         path: "pendingRiders",
         element: (
@@ -90,6 +117,14 @@ export const router = createBrowserRouter([
         element: (
           <AdminRoute>
             <ActiveRider />
+          </AdminRoute>
+        ),
+      },
+      {
+        path: "assignRider",
+        element: (
+          <AdminRoute>
+            <AssignRider />
           </AdminRoute>
         ),
       },

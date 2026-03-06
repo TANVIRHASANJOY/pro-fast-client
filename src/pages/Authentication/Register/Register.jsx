@@ -1,16 +1,17 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 
 import SocialLogIn from "../SocialLogIn/SocialLogIn";
 import { AuthContext } from "../../../Contexts/AuthContexts/AuthContext";
-import useAxiosSecure from "../../../hooks/useAxiosSecure"; // ✅ ADD
+import useAxiosSecure from "../../../hooks/useAxiosSecure";
+
+import { FiEye, FiEyeOff } from "react-icons/fi"; // ✅ Eye icons
 
 const Register = () => {
-
   const { createUser } = useContext(AuthContext);
   const navigate = useNavigate();
-  const axiosSecure = useAxiosSecure(); // ✅ ADD
+  const axiosSecure = useAxiosSecure();
 
   const {
     register,
@@ -21,15 +22,18 @@ const Register = () => {
 
   const password = watch("password");
 
+  // ✅ State for password toggle
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  const togglePassword = () => setShowPassword(!showPassword);
+  const toggleConfirmPassword = () => setShowConfirmPassword(!showConfirmPassword);
+
   const onSubmit = async (data) => {
     try {
-
-      // ✅ Step 1: Create user in Firebase
       const result = await createUser(data.email, data.password);
-
       const loggedUser = result.user;
 
-      // ✅ Step 2: Save user in MongoDB
       const userInfo = {
         name: data.fullName,
         email: loggedUser.email,
@@ -38,131 +42,89 @@ const Register = () => {
       };
 
       await axiosSecure.put("/users", userInfo);
-
       console.log("User saved to DB");
 
-      // ✅ Step 3: Redirect
       navigate("/");
-
     } catch (error) {
       console.log(error.message);
     }
   };
 
-
-
   return (
     <div className="w-full max-w-md mx-auto p-6 bg-white shadow-lg rounded-lg mt-10">
-
       <h2 className="text-2xl font-bold text-center mb-6">
         Create a New Account
       </h2>
 
-
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-
 
         {/* Full Name */}
         <div>
-          <label className="block mb-1 text-sm font-medium">
-            Full Name
-          </label>
-
+          <label className="block mb-1 text-sm font-medium">Full Name</label>
           <input
             type="text"
-            {...register("fullName", {
-              required: "Full name is required"
-            })}
+            {...register("fullName", { required: "Full name is required" })}
             placeholder="Enter your full name"
             className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
           />
-
-          {errors.fullName && (
-            <p className="text-red-500 text-sm mt-1">
-              {errors.fullName.message}
-            </p>
-          )}
+          <p className="text-red-500 text-sm mt-1">{errors.fullName?.message}</p>
         </div>
-
-
 
         {/* Email */}
         <div>
-          <label className="block mb-1 text-sm font-medium">
-            Email
-          </label>
-
+          <label className="block mb-1 text-sm font-medium">Email</label>
           <input
             type="email"
-            {...register("email", {
-              required: "Email is required"
-            })}
+            {...register("email", { required: "Email is required" })}
             placeholder="Enter your email"
             className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
           />
-
-          {errors.email && (
-            <p className="text-red-500 text-sm mt-1">
-              {errors.email.message}
-            </p>
-          )}
+          <p className="text-red-500 text-sm mt-1">{errors.email?.message}</p>
         </div>
 
-
-
         {/* Password */}
-        <div>
-          <label className="block mb-1 text-sm font-medium">
-            Password
-          </label>
-
+        <div className="relative">
+          <label className="block mb-1 text-sm font-medium">Password</label>
           <input
-            type="password"
+            type={showPassword ? "text" : "password"}
             {...register("password", {
               required: "Password is required",
-              minLength: {
-                value: 6,
-                message: "Password must be at least 6 characters",
-              },
+              minLength: { value: 6, message: "Password must be at least 6 characters" },
             })}
             placeholder="Enter your password"
             className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
           />
-
-          {errors.password && (
-            <p className="text-red-500 text-sm mt-1">
-              {errors.password.message}
-            </p>
-          )}
+          {/* Eye icon */}
+          <span
+            className="absolute right-3 top-10 cursor-pointer text-gray-500"
+            onClick={togglePassword}
+          >
+            {showPassword ? <FiEyeOff /> : <FiEye />}
+          </span>
+          <p className="text-red-500 text-sm mt-1">{errors.password?.message}</p>
         </div>
 
-
-
         {/* Confirm Password */}
-        <div>
-          <label className="block mb-1 text-sm font-medium">
-            Confirm Password
-          </label>
-
+        <div className="relative">
+          <label className="block mb-1 text-sm font-medium">Confirm Password</label>
           <input
-            type="password"
+            type={showConfirmPassword ? "text" : "password"}
             {...register("confirmPassword", {
               required: "Confirm your password",
-              validate: (value) =>
-                value === password || "Passwords do not match",
+              validate: (value) => value === password || "Passwords do not match",
             })}
             placeholder="Confirm your password"
             className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
           />
-
-          {errors.confirmPassword && (
-            <p className="text-red-500 text-sm mt-1">
-              {errors.confirmPassword.message}
-            </p>
-          )}
+          {/* Eye icon */}
+          <span
+            className="absolute right-3 top-10 cursor-pointer text-gray-500"
+            onClick={toggleConfirmPassword}
+          >
+            {showConfirmPassword ? <FiEyeOff /> : <FiEye />}
+          </span>
+          <p className="text-red-500 text-sm mt-1">{errors.confirmPassword?.message}</p>
         </div>
-
-
 
         {/* Submit Button */}
         <button
@@ -171,29 +133,18 @@ const Register = () => {
         >
           Sign Up
         </button>
-
-
       </form>
-
 
       {/* Google Login */}
       <SocialLogIn />
 
-
       {/* Login Link */}
       <p className="mt-4 text-center text-gray-600">
-
         Already have an account?{" "}
-
-        <Link
-          className="text-green-600 font-semibold hover:underline"
-          to="/login"
-        >
+        <Link className="text-green-600 font-semibold hover:underline" to="/login">
           Log In
         </Link>
-
       </p>
-
     </div>
   );
 };

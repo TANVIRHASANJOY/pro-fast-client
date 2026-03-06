@@ -43,8 +43,8 @@ const ActiveRider = () => {
 
   // Filter riders based on search input
   const filteredRiders = riders.filter((rider) =>
-    rider.name.toLowerCase().includes(search.toLowerCase()) ||
-    rider.phone?.toLowerCase().includes(search.toLowerCase())
+    (rider.name?.toLowerCase().includes(search.toLowerCase()) || 
+     rider.phone?.toLowerCase().includes(search.toLowerCase()))
   );
 
   return (

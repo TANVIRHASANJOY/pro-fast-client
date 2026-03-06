@@ -1,23 +1,23 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../../Contexts/AuthContexts/AuthContext";
 import SocialLogIn from "../SocialLogIn/SocialLogIn";
+import { FiEye, FiEyeOff } from "react-icons/fi"; // ✅ Eye icons
 
 const Login = () => {
   const { signIn } = useContext(AuthContext);
   const navigate = useNavigate();
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm();
+  const { register, handleSubmit, formState: { errors } } = useForm();
+
+  const [showPassword, setShowPassword] = useState(false); // ✅ Toggle state
+  const togglePassword = () => setShowPassword(!showPassword);
 
   const onSubmit = (data) => {
     signIn(data.email, data.password)
       .then(() => {
-        navigate("/"); // ✅ Redirect to Home
+        navigate("/"); // Redirect to Home
       })
       .catch((error) => {
         console.log(error.message);
@@ -29,6 +29,7 @@ const Login = () => {
       <h2 className="text-2xl font-bold text-center mb-6">Login to Your Account</h2>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        {/* Email */}
         <div>
           <label className="block mb-1 text-sm font-medium">Email</label>
           <input
@@ -37,15 +38,14 @@ const Login = () => {
             {...register("email", { required: "Email is required" })}
             className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
           />
-          {errors.email && (
-            <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>
-          )}
+          <p className="text-red-500 text-sm mt-1">{errors.email?.message}</p>
         </div>
 
-        <div>
+        {/* Password with toggle */}
+        <div className="relative">
           <label className="block mb-1 text-sm font-medium">Password</label>
           <input
-            type="password"
+            type={showPassword ? "text" : "password"} // ✅ Toggle input type
             placeholder="Enter your password"
             {...register("password", {
               required: "Password is required",
@@ -53,9 +53,13 @@ const Login = () => {
             })}
             className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
           />
-          {errors.password && (
-            <p className="text-red-500 text-sm mt-1">{errors.password.message}</p>
-          )}
+          <span
+            className="absolute right-3 top-10 cursor-pointer text-gray-500"
+            onClick={togglePassword}
+          >
+            {showPassword ? <FiEyeOff /> : <FiEye />}
+          </span>
+          <p className="text-red-500 text-sm mt-1">{errors.password?.message}</p>
         </div>
 
         <button

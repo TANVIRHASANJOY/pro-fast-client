@@ -43,6 +43,7 @@ const DashBoardLayout = () => {
       <div className="drawer-side z-40">
         <label htmlFor="dashboard-drawer" className="drawer-overlay"></label>
         <ul className="menu p-4 w-72 min-h-full bg-slate-900 text-slate-300">
+          
           {/* Brand */}
           <div className="flex items-center gap-2 px-4 py-6 mb-4">
             <div className="w-10 h-10 bg-green-500 rounded-lg flex items-center justify-center text-white font-black text-xl">
@@ -80,6 +81,24 @@ const DashBoardLayout = () => {
             </NavLink>
           </li>
 
+          {/* ================= RIDER SECTION ================= */}
+          <div className="divider before:bg-slate-800 after:bg-slate-800 my-4"></div>
+
+          <p className="px-4 text-xs font-semibold text-slate-500 uppercase tracking-widest mb-4">
+            Rider Panel
+          </p>
+
+          <li className="mb-2">
+            <NavLink to="/dashboard/pendingDeliveries" className={linkClass}>
+              🚚 Pending Deliveries
+            </NavLink>
+          </li>
+          <li className="mb-2">
+  <NavLink to="/dashboard/completeDelivery" className={linkClass}>
+    ✅ Completed Deliveries
+  </NavLink>
+</li>
+
           {/* ================= ADMIN ONLY SECTION ================= */}
           {isAdmin && (
             <>
@@ -98,6 +117,12 @@ const DashBoardLayout = () => {
               <li className="mb-2">
                 <NavLink to="/dashboard/activeRiders" className={linkClass}>
                   ✅ Active Riders
+                </NavLink>
+              </li>
+
+              <li className="mb-2">
+                <NavLink to="/dashboard/assignRider" className={linkClass}>
+                  🏍 Assign Rider
                 </NavLink>
               </li>
 
@@ -123,6 +148,7 @@ const DashBoardLayout = () => {
               🏠 Home
             </NavLink>
           </li>
+
         </ul>
       </div>
     </div>
