@@ -29,6 +29,7 @@ import AdminRoute from "../routes/AdminRoute";
 import RiderRoute from "../routes/RiderRoute";
 import CompleteDelivery from "../pages/dashBoard/CompleteDelivery";
 import AboutUs from "../pages/Home/About/AboutUs";
+import DashboardHome from "../pages/dashBoard/DashboardHome";
 
 export const router = createBrowserRouter([
   {
@@ -79,6 +80,9 @@ Component:AboutUs,
       </PrivateRoutes>
     ),
     children: [
+      {
+index:true, Component:DashboardHome,
+      },
       // USER
       { path: "myParcels", element: <MyParcels /> },
       { path: "payment/:id", element: <Payments /> },
