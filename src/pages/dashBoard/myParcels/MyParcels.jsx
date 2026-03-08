@@ -10,6 +10,8 @@ const MyParcels = () => {
     const { user, loading: authLoading } = useAuth();
     const queryClient = useQueryClient();
     const [editData, setEditData] = useState(null);
+ 
+console.log("User before API call:", user);
 
     // 1. Fetching Parcels
     const { data: parcels = [], isLoading } = useQuery({

@@ -4,7 +4,8 @@ import useAuth from './useAuth';
 
 const axiosSecure = axios.create({
     baseURL: `https://pro-fast-server-zeta.vercel.app`,
-    // withCredentials: true // Uncomment this if you're using cookies
+    //  baseURL: 'http://localhost:5000',
+    withCredentials: true // Uncomment this if you're using cookies
 });
 
 const useAxiosSecure = () => {
